@@ -10,7 +10,14 @@ load_dotenv()
 class DeepSeekService:
     def __init__(self):
         self.api_key = os.getenv('DEEPSEEK_API_KEY')
-        self.base_url = "https://api.deepseek.com/v1/chat/completions"
+        # Allow overriding base URL and model via env
+        self.base_url = os.getenv('DEEPSEEK_BASE_URL', "https://api.deepseek.com/v1/chat/completions")
+        self.model = os.getenv('DEEPSEEK_MODEL', 'deepseek-chat')
+        # Optional request timeout override (seconds)
+        try:
+            self.timeout = float(os.getenv('DEEPSEEK_TIMEOUT', '30'))
+        except Exception:
+            self.timeout = 30.0
         
     def _make_request(self, messages: List[Dict], temperature: float = 0.7, max_tokens: int = 200) -> Optional[str]:
         """Make request to DeepSeek API"""
@@ -28,7 +35,7 @@ class DeepSeekService:
         }
         
         payload = {
-            "model": "deepseek-chat",
+            "model": self.model,
             "messages": messages,
             "temperature": temperature,
             "max_tokens": max_tokens,
@@ -40,15 +47,45 @@ class DeepSeekService:
                 self.base_url,
                 headers=headers,
                 json=payload,
-                timeout=30
+                timeout=self.timeout
             )
             
-            if response.status_code == 200:
-                result = response.json()
-                return result['choices'][0]['message']['content']
-            else:
-                st.error(f"API Error: {response.status_code} - {response.text}")
+            if response.status_code != 200:
+                # Show full body to help diagnose (invalid key, quota, model access)
+                try:
+                    err_json = response.json()
+                    st.error(f"DeepSeek API error {response.status_code}: {err_json}")
+                except Exception:
+                    st.error(f"DeepSeek API error {response.status_code}: {response.text}")
                 return None
+
+            # Validate success shape
+            try:
+                result = response.json()
+            except Exception:
+                st.error("DeepSeek API returned non-JSON response")
+                return None
+
+            # Handle API-level error objects
+            if isinstance(result, dict) and 'error' in result:
+                st.error(f"DeepSeek API error: {result['error']}")
+                return None
+
+            try:
+                content = result['choices'][0]['message']['content']
+            except Exception:
+                st.error(f"Unexpected DeepSeek response format: {result}")
+                return None
+
+            if isinstance(content, str) and content.strip().lower() in {"[ai not configured]", "ai not configured"}:
+                st.error(
+                    "DeepSeek responded with '[AI not configured]'. Check: "
+                    "(1) your DEEPSEEK_API_KEY validity/quota, (2) DEEPSEEK_MODEL availability, "
+                    "and (3) DEEPSEEK_BASE_URL correctness."
+                )
+                return None
+
+            return content
                 
         except requests.exceptions.Timeout:
             st.error("Request timed out. Please try again.")
@@ -88,7 +125,7 @@ class DeepSeekService:
                     messages.append({"role": "assistant", "content": assistant_msg})
 
         messages.append({"role": "user", "content": prompt})
-        return self._make_request(messages, temperature=0.6, max_tokens=1200)
+        return self._make_request(messages, temperature=0.6, max_tokens=200)
 
     def summarize_lesson(self, content: str) -> Optional[str]:
         """Create a student-friendly summary with key points and takeaways."""
