@@ -1,0 +1,15 @@
+# sqlite3 is part of the Python standard library.
+
+streamlit==1.38.0
+streamlit-authenticator==0.3.1
+pandas==2.2.3
+python-dotenv==1.0.0
+requests==2.31.0
+bcrypt==4.1.2
+email-validator==2.1.0
+python-jose[cryptography]==3.3.0
+passlib==1.7.4
+Pillow==10.4.0
+plotly==5.18.0
+streamlit-chat==0.1.1
+python-dateutil==2.8.2
