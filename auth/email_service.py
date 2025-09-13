@@ -3,16 +3,17 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 from dotenv import load_dotenv
+import streamlit as st
 
 load_dotenv()
 
 
 class EmailService:
     def __init__(self):
-        self.email_host = os.getenv('EMAIL_HOST')
-        self.email_port = int(os.getenv('EMAIL_PORT', 587))
-        self.email_user = os.getenv('EMAIL_USER')
-        self.email_password = os.getenv('EMAIL_PASSWORD')
+        self.email_host = os.getenv('EMAIL_HOST') or st.secrets['EMAIL_HOST']
+        self.email_port = os.getenv('EMAIL_PORT') or st.secrets['EMAIL_PORT'] or 587
+        self.email_user = os.getenv('EMAIL_USER') or st.secrets['EMAIL_USER']
+        self.email_password = os.getenv('EMAIL_PASSWORD') or st.secrets['EMAIL_PASSWORD']
 
     def send(self, subject: str, to_email: str, html_content: str):
         msg = MIMEMultipart('alternative')
@@ -36,10 +37,10 @@ load_dotenv()
 
 class EmailService:
     def __init__(self):
-        self.email_host = os.getenv('EMAIL_HOST')
-        self.email_port = int(os.getenv('EMAIL_PORT', 587))
-        self.email_user = os.getenv('EMAIL_USER')
-        self.email_password = os.getenv('EMAIL_PASSWORD')
+        self.email_host = os.getenv('EMAIL_HOST') or st.secrets['EMAIL_HOST']
+        self.email_port = os.getenv('EMAIL_PORT') or st.secrets['EMAIL_PORT'] or 587
+        self.email_user = os.getenv('EMAIL_USER') or st.secrets['EMAIL_USER']
+        self.email_password = os.getenv('EMAIL_PASSWORD') or st.secrets['EMAIL_PASSWORD']
 
     def send(self, subject: str, to_email: str, html_content: str):
         msg = MIMEMultipart('alternative')

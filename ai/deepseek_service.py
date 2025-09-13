@@ -9,13 +9,13 @@ load_dotenv()
 
 class DeepSeekService:
     def __init__(self):
-        self.api_key = os.getenv('DEEPSEEK_API_KEY')
+        self.api_key = os.getenv('DEEPSEEK_API_KEY') or st.secrets['DEEPSEEK_API_KEY']
         # Allow overriding base URL and model via env
-        self.base_url = os.getenv('DEEPSEEK_BASE_URL', "https://api.deepseek.com/v1/chat/completions")
-        self.model = os.getenv('DEEPSEEK_MODEL', 'deepseek-chat')
+        self.base_url = os.getenv('DEEPSEEK_BASE_URL') or st.secrets['DEEPSEEK_BASE_URL'] or "https://api.deepseek.com/v1/chat/completions"
+        self.model = os.getenv('DEEPSEEK_MODEL', 'deepseek-chat') or st.secrets['DEEPSEEK_MODEL'] or 'deepseek-chat'
         # Optional request timeout override (seconds)
         try:
-            self.timeout = float(os.getenv('DEEPSEEK_TIMEOUT', '30'))
+            self.timeout = float(os.getenv('DEEPSEEK_TIMEOUT', '30') or st.secrets['DEEPSEEK_TIMEOUT'] or '30')
         except Exception:
             self.timeout = 30.0
         

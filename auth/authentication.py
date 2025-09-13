@@ -13,12 +13,12 @@ load_dotenv()
 
 class AuthService:
     def __init__(self):
-        self.email_host = os.getenv('EMAIL_HOST')
-        self.email_port = int(os.getenv('EMAIL_PORT', 587))
-        self.email_user = os.getenv('EMAIL_USER')
-        self.email_password = os.getenv('EMAIL_PASSWORD')
-        self.app_url = os.getenv('APP_URL', 'http://localhost:8501')
-    
+        self.email_host = os.getenv('EMAIL_HOST') or st.secrets['EMAIL_HOST']
+        self.email_port = os.getenv('EMAIL_PORT') or st.secrets['EMAIL_PORT'] or 587
+        self.email_user = os.getenv('EMAIL_USER') or st.secrets['EMAIL_USER']
+        self.email_password = os.getenv('EMAIL_PASSWORD') or st.secrets['EMAIL_PASSWORD']
+        self.app_url = os.getenv('APP_URL') or st.secrets['APP_URL'] or 'http://localhost:8501'
+
     def hash_password(self, password: str) -> str:
         """Hash password using bcrypt"""
         return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
