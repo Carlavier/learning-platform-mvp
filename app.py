@@ -6,6 +6,9 @@ import time
 from database.connection import init_database, get_db_connection
 from auth.authentication import AuthService
 
+# New code
+# Application entry point
+
 # Load environment variables
 load_dotenv()
 
