@@ -8,8 +8,33 @@ from auth.authentication import AuthService
 
 # Load environment variables
 load_dotenv()
-
+#Skibiditoilet69
 # Page configuration
+import streamlit as st
+import os
+from dotenv import load_dotenv
+from datetime import datetime
+import time
+from database.connection import init_database, get_db_connection
+from auth.authentication import AuthService
+
+# Load environment variables
+load_dotenv()
+#Skibiditoilet69
+# Page configuration
+import streamlit as st
+import os
+from dotenv import load_dotenv
+from datetime import datetime
+import time
+from database.connection import init_database, get_db_connection
+from auth.authentication import AuthService
+
+# Load environment variables
+load_dotenv()
+#Skibiditoilet69
+# Page configuration
+
 st.set_page_config(
     page_title="Learning Platform",
     page_icon="📚",
