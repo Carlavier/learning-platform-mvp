@@ -8,7 +8,8 @@ from auth.authentication import AuthService
 
 # Load environment variables
 load_dotenv()
-
+# skibidi
+print("hello")
 # Page configuration
 st.set_page_config(
     page_title="Learning Platform",
