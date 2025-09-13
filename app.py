@@ -6,7 +6,10 @@ from datetime import datetime
 import time
 from database.connection import init_database, get_db_connection
 from auth.authentication import AuthService
-# we will destroy this world 
+
+# New code
+# Application entry point
+
 # Load environment variables
 load_dotenv()
 
